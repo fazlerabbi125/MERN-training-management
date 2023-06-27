@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { getTokens } from "../utils/handleStorage";
+import { getTokens, setStorage } from "../utils/handleStorage";
+
+const server_URL = process.env.REACT_APP_SERVER_URL || "http://localhost:8000";
 
 const axInstance = axios.create({
-  baseURL: process.env.SERVER_URL || "http://localhost:8000",
+  baseURL: server_URL,
 });
 
 axInstance.interceptors.response.use(
@@ -22,14 +24,15 @@ axInstance.interceptors.response.use(
     const status = error.response ? error.response.status : null;
     if (decodedUser && isExpired && status === 403) {
       try {
-        const { data } = await axInstance.post("/refresh-token", {
+        const {
+          data: {
+            results: { access_token, refresh_token },
+          },
+        } = await axInstance.post("/refresh-token", {
           token: refreshToken,
         });
-        localStorage.setItem("refresh", data.results.refresh_token);
-        localStorage.setItem("token", data.results.access_token);
-        prevRequest.headers[
-          "Authorization"
-        ] = `Bearer ${data.results.access_token}`;
+        setStorage(access_token, refresh_token);
+        prevRequest.headers["Authorization"] = `Bearer ${access_token}`;
         return axInstance(prevRequest);
       } catch (err) {
         console.log(err);
@@ -42,9 +45,10 @@ axInstance.interceptors.response.use(
 const useAxios = (url, dataTimeout = 1000) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
       try {
         let response = await axInstance.get(url, {
@@ -69,4 +73,4 @@ const useAxios = (url, dataTimeout = 1000) => {
 
   return { data, error, isLoading };
 };
-export { axInstance, useAxios };
+export { axInstance, useAxios, server_URL };

@@ -13,7 +13,10 @@ const ejsRenderFile = promisify(ejs.renderFile);
 const Token = require("../models/Token");
 const fs = require("fs");
 
+const userProfileImagePath = "/uploads/profiles/";
+
 class AuthController {
+
     async getProfile(req, res, next) {
         try {
             const id = req.params.userID;
@@ -57,16 +60,16 @@ class AuthController {
             const { name, email, imgClear, gender, token, birth_date } = req.body;
 
             if (req.file || imgClear) {
-                if (user.photo.startsWith(process.env.BACKEND_URI)) {
+                if (user.photo.startsWith(userProfileImagePath)) {
                     const filepath = path.join(
                         __dirname,
                         "..",
-                        user.photo.split(process.env.BACKEND_URI + "/")[1]
+                        user.photo
                     );
                     if (fs.existsSync(filepath)) await fs.promises.unlink(filepath);
                 }
                 user.photo = req.file
-                    ? process.env.BACKEND_URI + "/uploads/profiles/" + req.file.filename
+                    ? userProfileImagePath + req.file.filename
                     : "";
             }
 
@@ -95,9 +98,7 @@ class AuthController {
 
             const resData = {
                 access_token,
-                refresh_token,
-                name: user.name,
-                email: user.email,
+                refresh_token
             };
             return res
                 .status(HTTP_STATUS.OK)
