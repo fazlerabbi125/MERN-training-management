@@ -1,5 +1,5 @@
 //auto-bind package or arrow functions can also be used instead
-export function bindControllerMethods<C extends Record<string, any>>(obj: C) {
+export default function bindClassMethods<C extends Record<string, any>>(obj: C) {
     const fnKeys = Object.getOwnPropertyNames(Object.getPrototypeOf(obj));
     /*or 
     const propertyNames = Object.getOwnPropertyNames(AuthController.prototype);
@@ -7,7 +7,7 @@ export function bindControllerMethods<C extends Record<string, any>>(obj: C) {
     const propertyNames = Reflect.ownKeys(AuthController.prototype)
     */
     fnKeys.forEach((key) => {
-        if (key !== "constructor" && typeof obj[key] === "function") {
+        if (typeof obj[key] === "function" && key !== "constructor") {
             // prevent controller context value (i.e. this) from being lost when used as callback
             obj[key].bind(obj);
         }

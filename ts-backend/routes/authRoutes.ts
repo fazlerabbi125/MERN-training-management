@@ -1,7 +1,7 @@
 import multer, { FileFilterCallback } from "multer";
 import path from "path";
 import { Express, Request } from "express";
-import authMiddleware from "../middlewares/authMiddleware";
+import authMiddleware from "../middlewares/auth.middleware";
 
 export type MulterStorageCallback = (error: Error | null, destination: string) => void;
 

@@ -14,7 +14,7 @@ const sendMail = async (mailOptions: SendMailOptions) => {
         const mail = await transport.sendMail(mailOptions);
         console.log("Email sent: ", mail.response);
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 };
 

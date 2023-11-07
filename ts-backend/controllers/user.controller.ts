@@ -7,7 +7,7 @@ import { validationResult } from "express-validator";
 import HTTP_STATUS from "../utils/httpStatus";
 import { success, failure } from "../utils/commonResponse";
 import { User, UserDocument, UserModel } from "../models/user.model";
-import { bindControllerMethods } from "@/utils/bindControllerMethods";
+import bindClassMethods from "@/utils/bindClassMethods";
 
 export const JWT_keys = {
     access: process.env.JWT_ACCESS_KEY || "9f7d5ba0d0",
@@ -17,7 +17,7 @@ export const JWT_keys = {
 class UserController {
     private saltRounds = 10;
     constructor() {
-        bindControllerMethods(this);
+        bindClassMethods(this);
     }
 
     async signup(req: Request, res: Response, next: NextFunction) {
