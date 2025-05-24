@@ -1,28 +1,23 @@
 import express, { Response } from "express";
-import dotenv from "dotenv";
 import cors from "cors";
 import path from "path";
 import morgan from "morgan";
+import dotenv from "dotenv";
+dotenv.config();
+
 import HTTP_STATUS from "./utils/httpStatus";
 import { failure } from "./utils/commonResponse";
 import APIException from "./utils/exceptions";
+// Config values imported after dotenv configuration to get env variables
+import { appPort, corsOrigin, connectToDB, rootPath } from "./config";
 
 const app = express();
-dotenv.config();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use("/static", express.static(path.join(__dirname, "public")));
-app.use(
-    morgan(
-        "dev"
-        // {// log only 4xx and 5xx responses to console
-        //     skip: function (req, res) { return res.statusCode < 400 }
-        // }
-    )
-);
-const port = process.env.PORT || 8000;
-const corsOrigin = process.env.FRONTEND_URL || true;
+app.use("/static", express.static(path.join(rootPath, "..", "assets")));
+app.use(morgan("dev"));
+
 app.use(
     cors({
         origin: corsOrigin, //true for all, array, regex, or string for specific
@@ -30,12 +25,13 @@ app.use(
     })
 );
 
-app.listen(port, (err?: Error) => {
+app.listen(appPort, async (err?: Error) => {
     if (err) {
         console.error(err);
         return;
     }
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is running on port ${appPort}`);
+    await connectToDB(process.env.DB_URI ?? "", process.env.DB_NAME ?? "");
 });
 
 app.use((_req, res, _next) => {
