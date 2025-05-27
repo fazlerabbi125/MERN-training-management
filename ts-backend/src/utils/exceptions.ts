@@ -1,4 +1,4 @@
-import HTTP_STATUS from "./httpStatus";
+import { HTTP_STATUS } from "./constants";
 
 export default class APIException extends Error {
     status: HTTP_STATUS;

@@ -1,4 +1,16 @@
-enum HTTP_STATUS {
+export enum userRoles {
+    ADMIN = "admin",
+    TRAINER = "trainer",
+    TRAINEE = "trainee",
+}
+
+export enum genderOptions {
+    MALE = "male",
+    FEMALE = "female",
+    OTHERS = "others",
+}
+
+export enum HTTP_STATUS {
     //2xx success
     OK = 200,
     CREATED = 201,
@@ -14,4 +26,8 @@ enum HTTP_STATUS {
     INTERNAL_SERVER_ERROR = 500,
 }
 
-export default HTTP_STATUS;
+export enum TokenType {
+    JWTRefresh = "refresh",
+    PasswordReset = "passwordReset",
+    EmailVerify = "emailVerify",
+}

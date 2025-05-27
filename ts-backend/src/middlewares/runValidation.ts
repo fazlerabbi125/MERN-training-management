@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import { validationResult, ValidationChain } from "express-validator";
-import HTTP_STATUS from "../utils/httpStatus";
+import { validationResult, ContextRunner } from "express-validator";
+import { HTTP_STATUS } from "@/utils/constants";
 import APIException from "../utils/exceptions";
 import { deleteFile } from "../utils/file_handling";
 
 //https://express-validator.github.io/docs/guides/manually-running/
 // sequential processing of validations chains
-export default function runValidation(validations: ValidationChain[]) {
-    return async (req: Request, res: Response, next: NextFunction) => {
+export default function runValidation(validations: ContextRunner[]) {
+    return async (req: Request, _res: Response, next: NextFunction) => {
         for (const validation of validations) {
             await validation.run(req);
         }

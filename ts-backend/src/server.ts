@@ -1,11 +1,12 @@
-import express, { Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import path from "path";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 dotenv.config();
 
-import HTTP_STATUS from "./utils/httpStatus";
+import { HTTP_STATUS } from "./utils/constants";
 import { failure } from "./utils/commonResponse";
 import APIException from "./utils/exceptions";
 // Config values imported after dotenv configuration to get env variables
@@ -15,6 +16,7 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 app.use("/static", express.static(path.join(rootPath, "..", "assets")));
 app.use(morgan("dev"));
 
@@ -31,14 +33,14 @@ app.listen(appPort, async (err?: Error) => {
         return;
     }
     console.log(`Server is running on port ${appPort}`);
-    await connectToDB(process.env.DB_URI ?? "", process.env.DB_NAME ?? "");
+    await connectToDB();
 });
 
 app.use((_req, res, _next) => {
     res.status(HTTP_STATUS.NOT_FOUND).send(failure("Route not found"));
 });
 
-app.use(<E extends Error>(err: E, _req, res: Response, _next) => {
+app.use(<E extends Error>(err: E, _req: Request, res: Response, _next: NextFunction) => {
     console.error(err);
     if (err instanceof APIException) {
         res.status(err.status).send(failure(err.message, err.errors));

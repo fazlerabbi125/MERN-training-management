@@ -1,5 +1,5 @@
 import { Request, RequestHandler } from "express";
-import HTTP_STATUS from "@/utils/httpStatus";
+import { HTTP_STATUS } from "@/utils/constants";
 import APIException from "@/utils/exceptions";
 
 class PermissionMiddleware {
