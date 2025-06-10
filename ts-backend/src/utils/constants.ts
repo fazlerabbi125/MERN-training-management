@@ -1,3 +1,7 @@
+import * as path from "path";
+
+export const rootPath = path.join(__dirname, "..");
+
 export enum userRoles {
     ADMIN = "admin",
     TRAINER = "trainer",

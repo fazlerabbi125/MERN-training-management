@@ -4,20 +4,24 @@ import path from "path";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-dotenv.config();
-
 import { HTTP_STATUS } from "./utils/constants";
 import { failure } from "./utils/commonResponse";
 import APIException from "./utils/exceptions";
-// Config values imported after dotenv configuration to get env variables
-import { appPort, corsOrigin, connectToDB, rootPath } from "./config";
+import { rootPath } from "./utils/constants";
+import connectToDB from "./config/db";
+import authMiddleware from "./middlewares/auth.middleware";
 
 const app = express();
+// dotenv must be configured before declaring/importing any value dependent on env
+dotenv.config();
+const corsOrigin = process.env.FRONTEND_URL ?? true;
+const appPort = process.env.PORT ?? 8000;
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // parses data when Content-Type header is application/x-www-form-urlencoded
+app.use(express.json()); // parses data when Content-Type header is application/json
 app.use(cookieParser());
 app.use("/static", express.static(path.join(rootPath, "..", "assets")));
+app.use("/media", express.static(path.join(rootPath, "..", "media")));
 app.use(morgan("dev"));
 
 app.use(
@@ -33,8 +37,10 @@ app.listen(appPort, async (err?: Error) => {
         return;
     }
     console.log(`Server is running on port ${appPort}`);
-    await connectToDB();
 });
+
+connectToDB();
+app.use(authMiddleware);
 
 app.use((_req, res, _next) => {
     res.status(HTTP_STATUS.NOT_FOUND).send(failure("Route not found"));
