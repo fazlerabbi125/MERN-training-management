@@ -11,12 +11,13 @@ import { rootPath } from "./utils/constants";
 import connectToDB from "./config/db";
 import authMiddleware from "./middlewares/auth.middleware";
 
-const app = express();
 // dotenv must be configured before declaring/importing any value dependent on env
 dotenv.config();
+connectToDB();
 const corsOrigin = process.env.FRONTEND_URL ?? true;
 const appPort = process.env.PORT ?? 8000;
 
+const app = express();
 app.use(express.urlencoded({ extended: true })); // parses data when Content-Type header is application/x-www-form-urlencoded
 app.use(express.json()); // parses data when Content-Type header is application/json
 app.use(cookieParser());
@@ -31,7 +32,7 @@ app.use(
     })
 );
 
-app.listen(appPort, async (err?: Error) => {
+app.listen(appPort, (err?: Error) => {
     if (err) {
         console.error(err);
         return;
@@ -39,7 +40,6 @@ app.listen(appPort, async (err?: Error) => {
     console.log(`Server is running on port ${appPort}`);
 });
 
-connectToDB();
 app.use(authMiddleware);
 
 app.use((_req, res, _next) => {

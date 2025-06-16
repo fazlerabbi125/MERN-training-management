@@ -30,8 +30,7 @@ export enum HTTP_STATUS {
     INTERNAL_SERVER_ERROR = 500,
 }
 
-export enum TokenType {
-    JWTRefresh = "refresh",
+export enum OTPTypes {
     PasswordReset = "passwordReset",
     EmailVerify = "emailVerify",
 }

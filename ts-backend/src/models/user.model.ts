@@ -1,16 +1,17 @@
 import mongoose, { Model, SchemaTimestampsConfig, HydratedDocument } from "mongoose";
 import bcrypt from "bcrypt";
-import { userRoles, genderOptions } from "@/utils/constants";
+import { userRoles } from "@/utils/constants";
 
 export interface IUser extends SchemaTimestampsConfig {
     name: string;
     email: string;
     password: string;
     role: userRoles;
-    gender: genderOptions;
-    birth_date: Date;
+    // gender: genderOptions;
+    // birth_date: Date;
     photo?: string | null;
     emailVerified: boolean;
+    lastLogin?: Date;
 }
 
 export type UserDocument = HydratedDocument<IUser>;
@@ -42,21 +43,22 @@ const userSchema = new mongoose.Schema<IUser, UserModel>(
             type: String,
             enum: Object.values(userRoles),
         },
-        gender: {
-            type: String,
-            required: [true, "Gender is required"],
-            enum: Object.values(genderOptions),
-        },
-        birth_date: {
-            type: Date,
-            required: true,
-        },
+        // gender: {
+        //     type: String,
+        //     required: [true, "Gender is required"],
+        //     enum: Object.values(genderOptions),
+        // },
+        // birth_date: {
+        //     type: Date,
+        //     required: true,
+        // },
         photo: String,
         emailVerified: {
             type: Boolean,
             required: true,
             default: false,
         },
+        lastLogin: Date,
     },
     { timestamps: true }
 );

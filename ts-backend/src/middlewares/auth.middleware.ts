@@ -1,8 +1,7 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
 import { Response, Request, NextFunction } from "express";
 import { JWT_keys } from "@/config/jwt";
 import { verifyJwtToken } from "@/utils/jwt_helper";
-import User from "@/models/user";
+import User from "@/models/user.model";
 
 export default async function authMiddleware(req: Request, res: Response, next: NextFunction) {
     const auth_header = req.headers.authorization;

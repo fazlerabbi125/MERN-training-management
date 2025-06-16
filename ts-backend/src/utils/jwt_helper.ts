@@ -1,5 +1,5 @@
 import jwt, { SignOptions, JwtPayload } from "jsonwebtoken";
-import { UserDocument } from "@/models/user";
+import { UserDocument } from "@/models/user.model";
 
 export function generateJwtToken<U extends Pick<UserDocument, "_id">>(
     user: U,

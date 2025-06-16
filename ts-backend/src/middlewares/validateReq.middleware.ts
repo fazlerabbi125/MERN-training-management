@@ -6,7 +6,7 @@ import { deleteFile } from "../utils/file_handling";
 
 //https://express-validator.github.io/docs/guides/manually-running/
 // sequential processing of validations chains
-export default function runValidation(validations: ContextRunner[]) {
+export default function validateReq(validations: ContextRunner[]) {
     return async (req: Request, _res: Response, next: NextFunction) => {
         for (const validation of validations) {
             await validation.run(req);
